@@ -13,7 +13,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        $payments = Payment::all();
+        return response()->json($payments);
     }
 
     /**
@@ -29,7 +30,22 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+        ]);
+
+        $payment = new Payment();
+        $payment->amount = $validatedData['amount'];
+        $payment->payment_method = $validatedData['payment_method'];
+        $payment->status = $validatedData['status'];
+        $payment->save();
+
+        return response()->json([
+            'message' => 'Payment created successfully',
+            'payment' => $payment
+        ], 201);
     }
 
     /**
@@ -37,7 +53,7 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
-        //
+        return response()->json($payment);
     }
 
     /**
@@ -53,7 +69,22 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
-        //
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+        ]);
+
+        $payment = Payment::findOrFail($payment->id);
+        $payment->amount = $validatedData['amount'];
+        $payment->payment_method = $validatedData['payment_method'];
+        $payment->status = $validatedData['status'];
+        $payment->save();
+
+        return response()->json([
+            'message' => 'Payment updated successfully',
+            'payment' => $payment
+        ]);
     }
 
     /**
@@ -61,6 +92,9 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        //
+        $payment->delete();
+        return response()->json([
+            'message' => 'Payment deleted successfully'
+        ]);
     }
 }

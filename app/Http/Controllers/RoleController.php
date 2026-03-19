@@ -13,7 +13,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        $roles = Role::all();
+        return response()->json($roles);
     }
 
     /**
@@ -29,7 +30,18 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $role = new Role();
+        $role->name = $validatedData['name'];
+        $role->save();
+
+        return response()->json([
+            'message' => 'Role created successfully',
+            'role' => $role
+        ], 201);
     }
 
     /**
@@ -37,7 +49,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+        return response()->json($role);
     }
 
     /**
@@ -53,7 +65,18 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $role = Role::findOrFail($role->id);
+        $role->name = $validatedData['name'];
+        $role->save();
+
+        return response()->json([
+            'message' => 'Role updated successfully',
+            'role' => $role
+        ]);
     }
 
     /**
@@ -61,6 +84,9 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return response()->json([
+            'message' => 'Role deleted successfully'
+        ]);
     }
 }
