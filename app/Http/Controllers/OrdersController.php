@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Orders;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -14,6 +15,16 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Orders::all();
+        return response()->json($orders);
+    }
+
+    //get order per user
+    public function ordersPerUser($id){
+        $orders= Orders::where('user_id', $id)->get();
+
+        foreach ($orders as $order) {
+            $order->product = Product::where('id', $order->product_id)->first();
+        }
         return response()->json($orders);
     }
 

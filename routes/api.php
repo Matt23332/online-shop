@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/fetchAllProducts', [ProductController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -22,6 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('orders', OrdersController::class);
     Route::resource('payments', PaymentController::class);
+
+    //Custom routes
+    Route::get('ordersPerUser/{id}', [OrdersController::class, 'ordersPerUser']);
 
 });
 
